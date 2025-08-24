@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/portia_jobplatform
+      - REDIS_URL=redis://redis:6379
+      - PORTIA_API_KEY=${PORTIA_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./uploads:/app/uploads
+      - ./.env:/app/.env
+    networks:
+      - portia-network
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: portia_jobplatform
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - portia-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - portia-network
+
+  worker:
+    build: .
+    command: celery -A app.celery_app worker --loglevel=info
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/portia_jobplatform
+      - REDIS_URL=redis://redis:6379
+      - PORTIA_API_KEY=${PORTIA_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./uploads:/app/uploads
+      - ./.env:/app/.env
+    networks:
+      - portia-network
+
+  scheduler:
+    build: .
+    command: celery -A app.celery_app beat --loglevel=info
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/portia_jobplatform
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./.env:/app/.env
+    networks:
+      - portia-network
+
+volumes:
+  postgres_data:
+
+networks:
+  portia-network:
+    driver: bridge

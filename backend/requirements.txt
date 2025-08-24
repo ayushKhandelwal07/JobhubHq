@@ -1,0 +1,68 @@
+# FastAPI and Web Framework
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+
+# Database
+sqlalchemy
+psycopg2-binary
+alembic
+
+# Data Validation
+pydantic
+pydantic[email]
+pydantic-settings
+email-validator
+typing-extensions
+
+# PORTIA AI SDK - MAXIMUM INTEGRATION
+portia-sdk-python
+
+# LLM Providers - Google Gemini as PRIMARY (FREE!)
+google-generativeai
+
+# Alternative LLM providers (fallback - optional)
+# openai
+# anthropic
+# mistralai
+
+# Browser Automation for Portia
+# selenium
+# playwright
+
+# HTTP and Networking
+requests
+httpx
+
+# Background Tasks
+celery
+redis
+
+# Authentication
+python-jose[cryptography]
+passlib[bcrypt]
+
+# Google Services Integration (for Portia tools)
+google-auth
+google-auth-oauthlib
+google-api-python-client
+gspread
+
+# GitHub Integration (for Portia tools)
+PyGithub
+
+# LinkedIn Integration (for Portia tools)
+# linkedin-api
+
+# Data Processing (minimal)
+# pandas
+beautifulsoup4
+
+# Utilities
+python-dateutil
+tenacity
+
+# Development
+wheel
+setuptools
